@@ -1,6 +1,8 @@
 package com.zsp.mydouyu.view.holder;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.zsp.mydouyu.R;
 import com.zsp.mydouyu.model.protocol.bean.Recommend1Hot;
 import com.zsp.mydouyu.model.protocol.bean.Recommend1HotCate;
+import com.zsp.mydouyu.view.PcLiveVideoActivity;
 import com.zsp.mydouyu.view.adapter.RecommentHotAdapter;
 
 import java.util.List;
@@ -48,5 +51,15 @@ public class RecommendHotCateHolder extends BaseHolderRV {
         tv_nickname.setText(room_list.getNickname());
         tv_column_item_nickname.setText(room_list.getRoom_name());
         tv_online_num.setText(room_list.getOnline());
+    }
+
+    @Override
+    protected void onItemClick(View itemView, int position, Object bean) {
+        Recommend1HotCate.DataBean.RoomListBean bean1 = (Recommend1HotCate.DataBean.RoomListBean) bean;
+        Intent intent = new Intent(context, PcLiveVideoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("Room_id",bean1.getRoom_id());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

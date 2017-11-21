@@ -1,6 +1,8 @@
 package com.zsp.mydouyu.view.holder;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import com.zsp.mydouyu.R;
 import com.zsp.mydouyu.model.protocol.bean.Recommend1Face;
 import com.zsp.mydouyu.model.protocol.bean.Recommend1Hot;
+import com.zsp.mydouyu.view.PcLiveVideoActivity;
 import com.zsp.mydouyu.view.adapter.RecommentHotAdapter;
 
 import common.ui.BaseAdapterRV;
@@ -51,5 +54,15 @@ public class RecommendFaceHolder extends BaseHolderRV {
         tv_facescore_city.setText(dataBean.getAnchor_city());
         tv_column_item_nickname.setText(dataBean.getRoom_name());
         tv_online_num.setText(dataBean.getOnline()+"");
+    }
+
+    @Override
+    protected void onItemClick(View itemView, int position, Object bean) {
+        Recommend1Face.DataBean bean1 = (Recommend1Face.DataBean) bean;
+        Intent intent = new Intent(context, PcLiveVideoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("Room_id",bean1.getRoom_id());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }
