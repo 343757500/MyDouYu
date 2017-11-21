@@ -21,13 +21,18 @@ import com.zsp.mydouyu.R;
 import com.zsp.mydouyu.model.protocol.IHttpService;
 import com.zsp.mydouyu.model.protocol.bean.CateListBean;
 import com.zsp.mydouyu.model.protocol.bean.LunBoBean;
+import com.zsp.mydouyu.model.protocol.bean.Recommend1Face;
 import com.zsp.mydouyu.model.protocol.bean.Recommend1Hot;
+import com.zsp.mydouyu.model.protocol.bean.Recommend1HotCate;
 import com.zsp.mydouyu.presenter.RecommendFragment1PresenterImp;
 import com.zsp.mydouyu.view.adapter.HomeAdapter;
 import com.zsp.mydouyu.view.adapter.HomeAllListAdapter;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,11 +46,17 @@ import common.util.Utils;
  */
 
 public class RecommendFragment1 extends BaseFragment {
-
+    /** RecyclerView显示的数据集合 */
+    private List listData = new ArrayList();
     private SpringView springView;
     private RecyclerView recyclerView;
     private HomeAdapter homeAdapter;
-    private RecommendFragment1PresenterImp recommendFragment1PresenterImp;
+    @Inject
+    RecommendFragment1PresenterImp recommendFragment1PresenterImp;
+    private List d =new ArrayList();
+    private List c=new ArrayList();
+    private List b=new ArrayList();
+    private List a=new ArrayList();
     //private SliderLayout sliderLayout;
 
     @Override
@@ -55,6 +66,7 @@ public class RecommendFragment1 extends BaseFragment {
 
     @Override
     public void initView() {
+
         springView = findView(R.id.spring_view);
         recyclerView = findView(R.id.recycler_view);
         springView.setHeader(new MeituanHeader(mActivity));
@@ -65,8 +77,15 @@ public class RecommendFragment1 extends BaseFragment {
             @Override
             public void onRefresh() {   // 下拉刷新
                  showToast("下拉刷新");
-
-               // presenter.getHomeData();
+                listData.clear();
+                a.clear();
+                b.clear();
+                c.clear();
+                d.clear();
+                recommendFragment1PresenterImp.getRecommendFragment1List();
+                recommendFragment1PresenterImp.getRecommendFragment1HotList();
+                recommendFragment1PresenterImp. getRecommendFragment1FaceList(0,4);
+                recommendFragment1PresenterImp.getRecommendFragment1HotCate();
             }
 
             @Override
@@ -80,6 +99,7 @@ public class RecommendFragment1 extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         homeAdapter = new HomeAdapter(getActivity(),null);
         recyclerView.setAdapter(homeAdapter);
+
     }
 
     @Override
@@ -89,9 +109,13 @@ public class RecommendFragment1 extends BaseFragment {
 
     @Override
     public void initData() {
+
         recommendFragment1PresenterImp = new RecommendFragment1PresenterImp(this);
+
         recommendFragment1PresenterImp.getRecommendFragment1List();
         recommendFragment1PresenterImp.getRecommendFragment1HotList();
+        recommendFragment1PresenterImp. getRecommendFragment1FaceList(0,4);
+        recommendFragment1PresenterImp.getRecommendFragment1HotCate();
     }
 
     @Override
@@ -100,8 +124,7 @@ public class RecommendFragment1 extends BaseFragment {
     }
 
 
-    /** RecyclerView显示的数据集合 */
-    private List listData = new ArrayList();
+
     public List getListData() {
         return listData;
     }
@@ -115,19 +138,60 @@ public class RecommendFragment1 extends BaseFragment {
         super.onHttpSuccess(reqType, message);
         if (reqType == IHttpService.TYPE_RECOMMEND) {
             LunBoBean lunBoBean = (LunBoBean) message.obj;
+            if (lunBoBean!=null) {
+                a = new ArrayList();
+                a.add(lunBoBean);
+            //    listData.add(0,lunBoBean);
 
-            listData.add(0,lunBoBean);
-
-            homeAdapter.setDatas(listData);
-            return;
+               // homeAdapter.setDatas(listData);
+            }
         }
 
         if (reqType == IHttpService.TYPE_RECOMMENDHOT){
             Recommend1Hot recommend1Hot = (Recommend1Hot) message.obj;
-            listData.add(1,recommend1Hot);
+            if (recommend1Hot!=null) {
+                b = new ArrayList();
+                b.add(recommend1Hot);
+              //  listData.add(1,recommend1Hot);
 
+               // homeAdapter.setDatas(listData);
+            }
+        }
+
+        if (reqType==IHttpService.TYPE_RECOMMENDFACE){
+            Recommend1Face recommend1Face=(Recommend1Face) message.obj;
+            if (recommend1Face!=null) {
+                c = new ArrayList();
+                c.add(recommend1Face);
+               // listData.add(2,recommend1Face);
+
+                //homeAdapter.setDatas(listData);
+            }
+        }
+
+        if (reqType==IHttpService.TYPE_RECOMMENDHOTCATE){
+            Recommend1HotCate recommend1HotCate= (Recommend1HotCate) message.obj;
+            if (recommend1HotCate!=null) {
+                List<Recommend1HotCate.DataBean> data = recommend1HotCate.getData();
+                d = new ArrayList();
+               // d.add(recommend1Face);
+                for (int i = 0; i < data.size(); i++) {
+                    d.add(i,recommend1HotCate);
+                   // listData.add(3+i, recommend1HotCate);
+                }
+               // homeAdapter.setDatas(listData);
+            }
+        }
+        if (a.size()>0&&b.size()>0&&c.size()>0&&d.size()>0) {
+            listData.add(0, a.get(0));
+            listData.add(1, b.get(0));
+            listData.add(2, c.get(0));
+            for (int i = 0; i < d.size(); i++) {
+                listData.add(3+i,d.get(i));
+            }
             homeAdapter.setDatas(listData);
         }
+
     }
 
     @Override
@@ -138,8 +202,9 @@ public class RecommendFragment1 extends BaseFragment {
         }
     }
 
-
-
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        listData.clear();
+    }
 }

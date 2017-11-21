@@ -107,7 +107,7 @@ public abstract class BaseFragment extends Fragment
 	public void onHttpError(int reqType, String error) {
 		mActivity.dismissProgressDialog();
 		// 提示出错对话框
-		mActivity.showDialog("提示", error);
+		mActivity.showDialog("提示", error+"11111");
 	}
 }
 

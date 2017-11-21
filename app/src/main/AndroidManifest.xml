@@ -19,7 +19,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
+
+        <!--PC直播-->
+        <activity
+            android:name=".view.PcLiveVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar.AppBaseThemeMain"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
         <meta-data
             android:name="design_width"
